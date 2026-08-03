@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-analyze_pilot.py — read a Frozen Mirrors results JSONL and report the two things
+analyze_pilot.py — read a results JSONL and report the two things
 the pilot exists to tell you, using ONLY the Python standard library.
 
   (1) MALFORMED-OUTPUT / FLAG RATES, stratified by item_type and condition.
