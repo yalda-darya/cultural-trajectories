@@ -1,0 +1,40 @@
+# ---- Secrets: never commit API keys ----
+.env
+.env.*
+!.env.example
+*.key
+
+# ---- Jupyter: strip these; they can carry keys in cells/outputs ----
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+# If you commit notebooks, clear ALL outputs first (nbstripout recommended).
+
+# ---- WVS microdata: licensed, do NOT redistribute ----
+data/wvs_source/
+*.rds
+*.sav
+*.dta
+
+# NOTE: elicitation JSONL under data/raw/ IS committed (data of record) — not ignored.
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.Rhistory
+.RData
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ---- Local scratch / backups produced by QC scripts ----
+*.bak
+*_BROKEN*.jsonl
+*_PREPATCH*.jsonl
+*_PILOT_k*.jsonl

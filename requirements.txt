@@ -1,0 +1,11 @@
+# Python deps for the runner + analysis. Pin versions before your OSF/Zenodo deposit.
+anthropic
+openai            # also used for Together (Qwen) and Meta via OpenAI-compatible base_url
+google-genai
+python-dotenv     # load .env (keeps keys out of notebooks)
+# analyze_pilot.py is stdlib-only.
+
+# --- R (ground truth) ---
+# build_ground_truth.R needs R (>= 4.x) with:
+#   haven   (read WVS .sav/.dta), dplyr, tidyr, readr
+# The WVS microdata is obtained separately (see data/wvs_source/) and not installed here.
