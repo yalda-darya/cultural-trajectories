@@ -58,16 +58,48 @@ discontinued. See `docs/model_panel.md` for the full rationale.
 ## Repository layout
 
 ```
-config/     frozen instrument: item bank + country-wave year spine
-src/        the runner, pilot analyzer, ground-truth builder
-scripts/    orchestration + QC (elicitation loops, completeness, cleaning, reflag)
-data/
-  raw/            elicitation JSONL, one dir per model (DATA OF RECORD — committed)
-  wvs_source/     WVS microdata (.rds) — NOT committed; download separately
-  ground_truth/   derived IW dimensions + standardization_params.csv
-  derived/        mean distributions, jitter tables, scored outputs
-results/    figures/ and tables/
-docs/       proposal, pilot report, model panel, JSONL schema, locked decisions
+frozen-mirrors/
+├── README.md
+├── LICENSE                      # code license (e.g. MIT)
+├── .gitignore
+├── .env.example                # names the keys, holds none of them
+├── requirements.txt            # pinned; + a note on the R deps
+├── CITATION.cff
+│
+├── config/                     # the FROZEN instrument — the locked experiment
+│   ├── item_bank_W4toW7.json   # PROMPT_VERSION 2026-07-20.1
+│   └── c2_year_spine.csv
+│
+├── src/
+│   ├── frozen_mirrors_runner.py    # 5-provider runner (anthropic/openai/google/together/meta)
+│   ├── analyze_pilot.py
+│   └── build_ground_truth.R
+│
+├── scripts/                    # orchestration + QC, versioned (not notebook cells)
+│   ├── run_elicitation.py      # the per-provider Cell 2 loops
+│   ├── qc_completeness.py       # the coverage/failed-row scan
+│   ├── qc_strip_failed.py
+│   └── reflag_type_c.py         # the 0.30 Type-C normalization pass
+│
+├── data/
+│   ├── raw/                    # elicitation JSONL, one dir per model
+│   │   ├── anthropic_claude-opus-4-8/
+│   │   ├── openai_gpt-5.5/
+│   │   ├── google_gemini-3.6-flash/
+│   │   └── together_qwen3.6-plus/
+│   ├── ground_truth/           # DERIVED IW dimensions + standardization_params.csv
+│   └── derived/                # mean_distributions, jitter, scored outputs
+│
+├── results/
+│   ├── figures/
+│   └── tables/
+│
+└── docs/
+    ├── Research_Proposal.pdf
+    ├── pilot_report.md
+    ├── model_panel.md          # the per-model methods table
+    ├── schema.md               # JSONL record + flag taxonomy
+    └── prereg_locked.md        # OSF-linked locked decisions
 ```
 
 ## Reproduce
