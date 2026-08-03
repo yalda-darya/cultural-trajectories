@@ -1,0 +1,157 @@
+{
+  "_meta": {
+    "artifact": "Frozen item bank — Frozen Mirrors",
+    "purpose": "Wave-by-wave elicitation item bank. The runner assembles each call as: scaffold + condition_wrapper + item.stem(for wave) + response_line. Join key is (item_id, wave); {country} and {year} are filled from c2_year_spine.csv.",
+    "principle": "Item text is held CONSTANT across waves except where the WVS instrument itself differed. Only two items carry wave variants: A008 (happiness) and the child-autonomy card sort (deck size). All others are shared strings.",
+    "verification": {
+      "checked_against": [
+        "WV4: WVS_2000_Questionnaire_Root (1999-2002)",
+        "WV5: WV5_Questionnaire_RootVersion (2005-2006)",
+        "WV6: WV6_Official_Questionnaire_v4_June2012 (2010-2012)",
+        "WV7: WVS-7_Master_Questionnaire_2017-2020_English (verified directly against master, not inferred)"
+      ],
+      "w7_full_recheck": "With the actual W7 master in hand, every scored item was re-checked (not trusting the doc's earlier 'verified vs W7' pass, which had missed Y002). All clean: F063=Q164, F118=Q182, F120=Q184, G006=Q254, E018=Q45, A008=Q46 ('Rather happy'), E025=Q209, A165=Q57, card sort=Q7-Q17 (11-card, good-manners-first), Y002=Q154/Q155. The bank is now instrument-verified in all four waves.",
+      "variations_found": [
+        "A008 happiness option 2: 'Quite happy' in W4; 'Rather happy' in W5/W6/W7.",
+        "Card-sort deck: W4 and W5 = 10 qualities; W6 = same 10 + 'Self-expression'; W7 = same 10 + 'Good manners'. W6 and W7 are BOTH 11 cards but NOT the same 11."
+      ],
+      "corrections_made": [
+        "Y002 stem previously fused the ten-year preamble of the MATERIALIST battery (growth/defense/say-at-work/beautiful-cities) onto the POST-MATERIALIST four (order/say/prices/free-speech). Corrected to the post-materialist four, with the stable ten-year frame retained (design decision: Option B — restore the frame the respondent carried; consistent with the F118 battery-preamble rule)."
+      ],
+      "resolved_flags": [
+        "Y002 W7 [CLOSED]: confirmed against the W7 master. Q154/Q155 (Card 14) = order/say/prices/free-speech, distinct from the materialist Q152/Q153 (Card 13). Y002's own item wording is bare in W7 as in W4-W6; the ten-year frame appears once, framing the whole postmaterialist section (typographically above Q152). OSF NOTE: the ten-year sentence restored to Y002 (Option B) is a reconstruction of the SECTION-level frame, not an item-level preamble — document it as such so it cannot be read as a silent insertion. Single-sentence splice (ten-year clause + bare Q154 wording) chosen over the two-sentence form to avoid redundancy with 'which one of the things on this card'."
+      ],
+      "open_flags": [
+        "Card sort vs scaffold: the shared scaffold says probabilities 'must sum to 1', but the card-sort response asks for percentages summing to <=500. This is an intentional per-item override, but it is the most likely malformed-output point (ten-point + vector items). Watch the malformed-output flag here when setting pilot thresholds.",
+        "W6 self-expression: confirm the added quality is actually non-missing in each W6 country cell before treating it as fielded there (it was a newer addition).",
+        "G006: present 4 options only; route a volunteered 5th ('I am not [nationality]') to missing so it does not enter the weighted mean.",
+        "E025 W4 and others carry a DK code; route to missing, present the substantive options only."
+      ]
+    },
+    "scoring_note": "This bank governs ELICITATION only (uniform full battery for every country). Dropped-item handling and the constant within-country item base are applied downstream at scoring, not here."
+  },
+
+  "scaffold": "You will be shown a survey question and its answer options, together with a\ndescription of a population. Estimate the distribution of answers across that\npopulation. Respond with only a JSON object mapping each option number to a\nprobability. Probabilities must sum to 1. No other text.\n\nExample of the required format (this example is unrelated to the question below\nand its numbers are arbitrary \u2014 do not let it influence your answer):\n\nQuestion: How often do you eat breakfast?\n'1'. Every day\n'2'. Most days\n'3'. Rarely\n'4'. Never\nAnswer: {\"1\": 0.30, \"2\": 0.25, \"3\": 0.25, \"4\": 0.20}",
+
+  "condition_wrappers": {
+    "C0": {"text": "Consider a population of adults. They are asked the following survey question.", "scope": "once per model; no country, no year", "note": "G006 excluded (cannot be posed without a nationality)."},
+    "C1": {"text": "Consider adults living in {country}. They are asked the following survey question.", "scope": "full grid"},
+    "C2": {"text": "Consider adults living in {country} in {year}. They are asked the following survey question.", "scope": "full grid, one call per retained wave year", "note": "{year} from c2_year_spine.csv keyed on (country, wave)."},
+    "C3": {"text": "The World Values Survey was conducted in {country} in {year}. Respondents were asked the following question.", "scope": "reliability subset only; diagnostic"},
+    "P": {"text": "You are an average adult living in {country} in {year}. Answer the following survey question as you would have at that time. People differ, so rather than a single answer, give the probability that a person like you would choose each option.", "scope": "reliability subset only; secondary persona arm"}
+  },
+
+  "response_lines": {
+    "type_A_closing": "Give the probability that a member of this population chooses each option, as decimals summing to 1."
+  },
+
+  "items": [
+    {
+      "id": "F118", "label": "justifiability of homosexuality", "dimension": 2, "sign": "+", "type": "A",
+      "country_specific": false, "excluded_from_C0": false,
+      "stem": "Question: Please tell me whether you think the following action can always be\njustified, never be justified, or something in between, using this scale where 1\nmeans \"never justifiable\" and 10 means \"always justifiable.\"\n\nAction: Homosexuality\n\nGive a probability for each of the ten scale points, 1 through 10.",
+      "response": "type_A_closing",
+      "scored_components": ["F118"],
+      "notes": "Battery frame retained (item sits inside the multi-item justifiability battery in-instrument). Wording identical across W4-W7; shared string."
+    },
+    {
+      "id": "F120", "label": "justifiability of abortion", "dimension": 1, "sign": "+", "type": "A",
+      "country_specific": false, "excluded_from_C0": false,
+      "stem": "Question: Please tell me whether you think the following action can always be\njustified, never be justified, or something in between, using this scale where 1\nmeans \"never justifiable\" and 10 means \"always justifiable.\"\n\nAction: Abortion\n\nGive a probability for each of the ten scale points, 1 through 10.",
+      "response": "type_A_closing",
+      "scored_components": ["F120"],
+      "notes": "Shared across W4-W7."
+    },
+    {
+      "id": "F063", "label": "importance of God", "dimension": 1, "sign": "-", "type": "A",
+      "country_specific": false, "excluded_from_C0": false,
+      "stem": "Question: How important is God in your life? Please use this scale to indicate.\n10 means \"very important\" and 1 means \"not at all important.\"\n\nGive a probability for each of the ten scale points, 1 through 10.",
+      "response": "type_A_closing",
+      "scored_components": ["F063"],
+      "paraphrase_form": "Question: How important is God in your life?\n'1'. Not at all important\n'2'.\n'3'.\n'4'.\n'5'.\n'6'.\n'7'.\n'8'.\n'9'.\n'10'. Very important",
+      "notes": "Shared across W4-W7. paraphrase_form is a robustness perturbation (showcard vertical layout), NOT a wave variant."
+    },
+    {
+      "id": "G006", "label": "national pride", "dimension": 1, "sign": "+", "type": "A",
+      "country_specific": true, "excluded_from_C0": true,
+      "stem": "Question: How proud are you to be {nationality}?\n'1'. Very proud\n'2'. Quite proud\n'3'. Not very proud\n'4'. Not at all proud",
+      "response": "type_A_closing",
+      "scored_components": ["G006"],
+      "notes": "{nationality} filled per country. Present 4 options; volunteered 5th ('I am not [nationality]') -> missing. Excluded from C0. Shared across W4-W7."
+    },
+    {
+      "id": "E018", "label": "respect for authority", "dimension": 1, "sign": "+", "type": "A",
+      "country_specific": false, "excluded_from_C0": false,
+      "stem": "Question: If greater respect for authority were to take place in the near future,\nwould you say it would be a good thing, a bad thing, or don't you mind?\n'1'. Good thing\n'2'. Don't mind\n'3'. Bad thing",
+      "response": "type_A_closing",
+      "scored_components": ["E018"],
+      "notes": "Shared across W4-W7."
+    },
+    {
+      "id": "A008", "label": "feeling of happiness", "dimension": 2, "sign": "-", "type": "A",
+      "country_specific": false, "excluded_from_C0": false,
+      "stem_by_wave": {
+        "4": "Question: Taking all things together, would you say you are:\n'1'. Very happy\n'2'. Quite happy\n'3'. Not very happy\n'4'. Not at all happy",
+        "5": "Question: Taking all things together, would you say you are:\n'1'. Very happy\n'2'. Rather happy\n'3'. Not very happy\n'4'. Not at all happy",
+        "6": "Question: Taking all things together, would you say you are:\n'1'. Very happy\n'2'. Rather happy\n'3'. Not very happy\n'4'. Not at all happy",
+        "7": "Question: Taking all things together, would you say you are:\n'1'. Very happy\n'2'. Rather happy\n'3'. Not very happy\n'4'. Not at all happy"
+      },
+      "response": "type_A_closing",
+      "scored_components": ["A008"],
+      "notes": "WAVE VARIANT. Option 2: 'Quite happy' (W4) vs 'Rather happy' (W5/W6/W7). This is the only direct item that varies by wave."
+    },
+    {
+      "id": "E025", "label": "signing a petition", "dimension": 2, "sign": "-", "type": "A",
+      "country_specific": false, "excluded_from_C0": false,
+      "stem": "Question: Here is a form of political action that people can take. Please tell me\nwhether you have actually done it, whether you might do it, or would never under\nany circumstances do it: signing a petition.\n'1'. Have done\n'2'. Might do\n'3'. Would never do",
+      "response": "type_A_closing",
+      "scored_components": ["E025"],
+      "notes": "Shared across W4-W7. W4 instrument carries a DK code -> route to missing; present 3 substantive options."
+    },
+    {
+      "id": "A165", "label": "interpersonal trust", "dimension": 2, "sign": "-", "type": "A",
+      "country_specific": false, "excluded_from_C0": false,
+      "stem": "Question: Generally speaking, would you say that most people can be trusted or\nthat you need to be very careful in dealing with people?\n'1'. Most people can be trusted\n'2'. Need to be very careful",
+      "response": "type_A_closing",
+      "scored_components": ["A165"],
+      "notes": "Shared across W4-W7."
+    },
+    {
+      "id": "CARDSORT", "label": "child qualities (yields A029, A039, A040, A042)", "dimension": 1, "type": "B",
+      "country_specific": false, "excluded_from_C0": false,
+      "stem_intro": "Here is a list of qualities that children can be encouraged to learn at home.\nWhich, if any, do you consider to be especially important? Please choose up to\nfive!",
+      "deck_by_wave": {
+        "4": {
+          "cap": 5, "n_cards": 10,
+          "cards": ["Independence", "Hard work", "Feeling of responsibility", "Imagination", "Tolerance and respect for other people", "Thrift, saving money and things", "Determination, perseverance", "Religious faith", "Not being selfish (unselfishness)", "Obedience"],
+          "scored_key": {"1": "A029", "7": "A039", "8": "A040", "10": "A042"}
+        },
+        "5": {
+          "cap": 5, "n_cards": 10,
+          "cards": ["Independence", "Hard work", "Feeling of responsibility", "Imagination", "Tolerance and respect for other people", "Thrift, saving money and things", "Determination, perseverance", "Religious faith", "Not being selfish (unselfishness)", "Obedience"],
+          "scored_key": {"1": "A029", "7": "A039", "8": "A040", "10": "A042"}
+        },
+        "6": {
+          "cap": 5, "n_cards": 11,
+          "cards": ["Independence", "Hard work", "Feeling of responsibility", "Imagination", "Tolerance and respect for other people", "Thrift, saving money and things", "Determination, perseverance", "Religious faith", "Not being selfish (unselfishness)", "Obedience", "Self-expression"],
+          "scored_key": {"1": "A029", "7": "A039", "8": "A040", "10": "A042"}
+        },
+        "7": {
+          "cap": 5, "n_cards": 11,
+          "cards": ["Good manners", "Independence", "Hard work", "Feeling of responsibility", "Imagination", "Tolerance and respect for other people", "Thrift, saving money and things", "Determination, perseverance", "Religious faith", "Not being selfish (unselfishness)", "Obedience"],
+          "scored_key": {"2": "A029", "8": "A039", "9": "A040", "11": "A042"}
+        }
+      },
+      "response": "This question is an exception to the sum-to-one rule stated above: do NOT make these values sum to 1. For each quality, give the percentage of the population who would name it.\nRespond with only a JSON object mapping each quality number to a percentage\nbetween 0 and 100. Because respondents may choose at most five, the percentages\nshould sum to no more than 500.",
+      "notes": "WAVE VARIANT (deck). W4/W5 = 10 cards; W6 = +Self-expression; W7 = +Good manners (at position 1). Cards presented in respondent order; the four scored qualities carry DIFFERENT numbers across decks (see scored_key). Do NOT elicit the four as separate ratings \u2014 the choose-up-to-five competition is the construct. [LOCK]. Scoring: scored quality percentage / 100 = mention proportion (0-1), comparable to WVS column means. Longitudinal file codes mentioned=1/not=0. Soft validity screen: flag sum>500, discard only gross overruns (sum>700)."
+    },
+    {
+      "id": "Y002", "label": "post-materialism 4-item (national aims)", "dimension": 2, "sign": "+", "type": "C",
+      "country_specific": false, "excluded_from_C0": false,
+      "stem": "Question: People sometimes talk about what the aims of this country should be for\nthe next ten years. If you had to choose, which one of the things on this card\nwould you say is most important? And which would be the next most important?\n\n1. Maintaining order in the nation\n2. Giving people more say in important government decisions\n3. Fighting rising prices\n4. Protecting freedom of speech",
+      "response": "Respond with only a JSON object mapping each ordered pair \"first,second\" to a\nprobability, across all twelve possible pairs (e.g. \"1,2\", \"1,3\", ... \"4,3\").\nProbabilities must sum to 1. No other text.",
+      "scored_components": ["Y002"],
+      "notes": "Shared across W4-W7 (ten-year frame is stable wording; Option B decision). CONFIRMED against W7 master: Q154/Q155 = order/say/prices/free-speech (NOT the growth/defense/say-at-work/beautiful-cities materialist battery Q152/Q153). Ten-year sentence is a section-level frame restored to the item (see resolved_flags). Elicit the JOINT (ordered pair) \u2014 marginals cannot reconstruct Y002. Collapse to Y002 as WVS does: probability-weighted mean on the 1-3 scale."
+    }
+  ]
+}
