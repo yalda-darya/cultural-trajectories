@@ -6,7 +6,7 @@ This is the parameterized version of the per-model notebook loop. The point of a
 single script is the claim it makes: every model went through the *identical*
 pipeline, and only the provider/model/k changed. The per-model differences that
 matter (reasoning-off mechanism, streaming, Type C band) live in the runner's client
-classes and validator, not here — see src/frozen_mirrors_runner.py and
+classes and validator, not here — see src/runner.py and
 docs/model_panel.md.
 
 The exact invocations used for the study are recorded in the README and docs/run_log.md.
