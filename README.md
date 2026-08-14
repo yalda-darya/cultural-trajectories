@@ -1,20 +1,17 @@
-# Cultural trajectories: do LLMs represent cultural change?
+# Accurate in space, unreliable in time: how LLMs represent national cultural change
 
 Code and data of record for **"Accurate in space, unreliable in time: how LLMs
-represent national cultural change"** (Daryani, Bogen, & Daepp).
+represent national cultural change"**.
 
-An audit of whether frontier large language models represent national cultures as
+A study of whether frontier large language models represent national cultures as
 **static snapshots** or as **dynamic trajectories of change**, benchmarked against
 the World Values Survey (WVS) / Inglehart–Welzel cultural map across Waves 4–7.
 
 The central distinction: *snapshot alignment* is closeness to a recent cultural
 position; *change alignment* is whether a model reproduces the direction, rate, and
-reversals of a society's movement over time. Recency anchoring — reproducing a
-present-day position regardless of the year asked about — is treated as a **failure
+reversals of a society's movement over time. Recency anchoring (reproducing a
+present-day position regardless of the year asked about) is treated as a **failure
 to represent change**, not as evidence of temporal competence.
-
-> Status: elicitation and statistical analysis complete; manuscript in preparation.
-> Findings are not yet peer reviewed.
 
 ## Research questions
 
@@ -40,11 +37,7 @@ exact mechanism each used to reach single-pass, and precision caveats are in
 | Google | Gemini 3.6 Flash | closed | `thinking_level="minimal"` (floor, not true off) |
 | Alibaba | Qwen3.6-Plus (via Together) | open | `enable_thinking=false` |
 
-Meta was evaluated and **excluded**: its current model (Muse Spark 1.1) is
-reasoning-only and cannot be run single-pass, and its non-reasoning line (Llama) is
-discontinued. Full rationale in `model_panel.md`.
-
-## Design (locked)
+## Design
 
 - **Estimand:** mean stated distribution over **k = 10** default-temperature draws
   per cell. No temperature is sent; each provider's default is used.
@@ -56,7 +49,7 @@ discontinued. Full rationale in `model_panel.md`.
   eight on Dimension 1, five on Dimension 2. Elicitation asks all ten items every
   wave; the ground-truth side drops items not fielded in a given country-wave.
 - **Ground truth:** Inglehart–Welzel two composite dimensions, Waves 4–7, computed
-  from the microdata as equal-weight composites of z-scored component items — a
+  from the microdata as equal-weight composites of z-scored component items, a
   standardized-composite proxy, not the published `tradrat5` / `survself` factor
   scores. The identical rule is applied to model outputs, which is what makes the
   two directly comparable.
@@ -112,7 +105,7 @@ cultural-trajectories/
 
 Scripts in `statistical analysis/code/` are numbered in dependency order. Each
 writes its outputs to disk, so any script can be re-run alone once its inputs
-exist. Each is also `knitr::spin()`-able into a standalone HTML report.
+exist. 
 
 **Working directory must be `statistical analysis/`**, with the scripts in a
 `code/` subfolder — every script calls `source("code/00_setup.R")` and reads its
@@ -130,7 +123,6 @@ inputs by bare filename.
 | `07_change_alignment.R` | Net displacement, step-level alignment against a shuffled-year permutation null, drift-free timing signal |
 | `08_reversals.R` | Turn angles at each path vertex; reversal reproduction guarded by a step-magnitude criterion |
 | `09_year_prompt_effect.R` | Whether naming the fieldwork year improves placement |
-| `10_figures.R` | Anchor curve and lag distribution |
 
 Run the whole thing with `source("run_all.R")`.
 
@@ -138,13 +130,11 @@ Run the whole thing with `source("run_all.R")`.
 
 1. `pip install -r requirements.txt`. R packages are recorded in `sessionInfo.txt`.
 2. Copy `.env.example` to `.env` and fill in the API keys you have. **Never commit `.env`.**
-3. Download the WVS trend microdata and place it at the path expected by
-   `00_build_ground_truth.R`. The data is not redistributed here.
-4. Elicit: `python scripts/run_elicitation.py --provider <lab> --model <id> --k 10`
+3. Elicit: `python scripts/run_elicitation.py --provider <lab> --model <id> --k 10`
    (writes idempotent, resumable JSONL to `data/`).
-5. QC: `python scripts/qc_completeness.py`, then `python scripts/qc_strip_failed.py`
+4. QC: `python scripts/qc_completeness.py`, then `python scripts/qc_strip_failed.py`
    on any flagged files.
-6. Analysis: from `statistical analysis/`, `source("run_all.R")`.
+5. Analysis: from `statistical analysis/`, `source("run_all.R")`.
 
 **Starting from the derived data.** If you don't have the WVS microdata, the
 aggregate coordinates in `statistical analysis/data/` are enough to reproduce every
@@ -159,8 +149,3 @@ result from script 03 onward. Set `SKIP_BUILD <- TRUE` in `run_all.R`.
   the World Values Survey Association (worldvaluessurvey.org). Only derived
   aggregates, where WVS terms permit, are included here.
 - Code is released under the terms in `LICENSE`.
-
-## Authors
-
-Yalda Daryani — PhD researcher, social psychology, University of Southern California;
-research / AI-governance intern, Center for Democracy & Technology.
