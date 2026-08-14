@@ -81,8 +81,3 @@ one scale.
   for more than half of respondents in all of that country's waves. Nine
   countries rest on a reduced base; the model side is restricted to the same
   per-country base so both sides average over the same items.
-
-## Citation
-
-Daryani, Y., Bogen, M., & Daepp, M. (2026). Accurate in space, unreliable in
-time: how LLMs represent national cultural change.
