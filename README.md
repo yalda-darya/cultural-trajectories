@@ -7,11 +7,7 @@ A study of whether frontier large language models represent national cultures as
 **static snapshots** or as **dynamic trajectories of change**, benchmarked against
 the World Values Survey (WVS) / Inglehart–Welzel cultural map across Waves 4–7.
 
-The central distinction: *snapshot alignment* is closeness to a recent cultural
-position; *change alignment* is whether a model reproduces the direction, rate, and
-reversals of a society's movement over time. Recency anchoring (reproducing a
-present-day position regardless of the year asked about) is treated as a **failure
-to represent change**, not as evidence of temporal competence.
+The central distinction is between *snapshot alignment* and *change alignment*. *Snapshot alignment* measures how closely a model places a society to its most recent surveyed position, while *change alignment* measures how well it captures that society's movement over time, including its direction, rate, and reversals. We also examine *implicit temporal anchoring*: when no year is specified, we ask which point in the society's surveyed history the model's response most closely resembles.
 
 ## Research questions
 
@@ -45,8 +41,7 @@ exact mechanism each used to reach single-pass, and precision caveats are in
   C1 names the country only (unprompted, present-tense representation); C2 names
   the country and the fieldwork year of a given wave. English, no perturbation arms.
 - **Instrument:** ten-indicator core item bank, `PROMPT_VERSION 2026-07-20.1`
-  (`config/item_bank_W4toW7.json`), decomposed into thirteen component variables —
-  eight on Dimension 1, five on Dimension 2. Elicitation asks all ten items every
+  (`config/item_bank_W4toW7.json`), decomposed into thirteen component variables. Elicitation asks all ten items every
   wave; the ground-truth side drops items not fielded in a given country-wave.
 - **Ground truth:** Inglehart–Welzel two composite dimensions, Waves 4–7, computed
   from the microdata as equal-weight composites of z-scored component items, a
@@ -75,7 +70,7 @@ cultural-trajectories/
 ├── model_panel.md                   # per-model methods table and exclusions
 ├── schema.md                        # JSONL record format + flag taxonomy
 │
-├── config/                          # the FROZEN instrument
+├── config/                          # the instrument
 │   ├── item_bank_W4toW7.json        # PROMPT_VERSION 2026-07-20.1
 │   └── c2_year_spine.csv            # modal fieldwork year per country-wave
 │
@@ -95,10 +90,14 @@ cultural-trajectories/
 │   ├── openai_gpt-5.5/
 │   └── together_Qwen-Qwen3.6-Plus/
 │
-└── statistical analysis/
-    ├── code/                        # the R pipeline (see below)
-    ├── data/                        # derived coordinates, CSV + RDS
-    └── output/                      # knitted reports and figures
+├── statistical analysis/
+│   ├── code/                        # the R analysis pipeline
+│   ├── data/                        # derived coordinates, CSV + RDS
+│   └── output/                      # knitted reports and analysis outputs
+│
+└── figures/
+    ├── code/                        # code used to generate figures
+    └── output/                      # generated figures
 ```
 
 ## The statistical pipeline
@@ -144,7 +143,7 @@ result from script 03 onward. Set `SKIP_BUILD <- TRUE` in `run_all.R`.
 
 - **Elicitation JSONL is primary data.** These models are updated or deprecated over
   time and stochastic elicitation does not regenerate identically, so the committed
-  JSONL is the record. A citable snapshot will be deposited to OSF/Zenodo for a DOI.
+  JSONL is the record. 
 - **WVS microdata is not redistributed.** It carries its own license; obtain it from
   the World Values Survey Association (worldvaluessurvey.org). Only derived
   aggregates, where WVS terms permit, are included here.
